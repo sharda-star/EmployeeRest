@@ -1,0 +1,230 @@
+<html>
+<head>
+<script
+	src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.4/angular.js"></script>
+ 
+<title>Spring Boot AngularJS example</title>
+<script type="text/javascript">
+            var app = angular.module("EmployeeManagement", []);
+         
+            //Controller Part
+            app.controller("EmployeeController", function($scope, $http) {
+                $scope.employees = [];
+                $scope.employeeForm = {
+                    id : -1,
+                    firstName : "",
+                    lastName : "",
+                    emailId : ""
+                };
+         
+                //Now load the data from server
+                _refreshEmployeeData();
+         
+                //HTTP POST/PUT methods for add/edit employee 
+                // with the help of id, we are going to find out whether it is put or post operation
+                
+                $scope.submitEmployee = function() {
+                	// alert($scope.employeeForm.id);
+                	// alert($scope.employeeForm.firstName);
+                	// alert($scope.employeeForm.lastName);
+                	// alert($scope.employeeForm.emailId);
+                	 var method = "";
+                     var url = "";
+                     if($scope.employeeForm.firstName!=null && $scope.employeeForm.lastName && $scope.employeeForm.emailId){
+	                     if ($scope.employeeForm.id == -1) {
+	                         //Id is absent in form data, it is create new customer operation
+	                         method = "POST";
+	                         url = 'http://localhost:8000/api/employee';
+	                     } else {
+	                         //Id is present in form data, it is edit customer operation
+	                         method = "PUT";
+	                         url = 'http://localhost:8000/api/employee/'+$scope.employeeForm.id;
+	                     }
+                     }else{
+                    	 alert('Please enter data...');
+                     }
+          
+                     $http({
+                         method : method,
+                         url : url,
+                         data : angular.toJson($scope.employeeForm),
+                         headers : {
+                             'Content-Type' : 'application/json'
+                         }
+                     }).then( _success, _error );
+                };
+         
+                //HTTP DELETE- delete employee by Id
+                $scope.deleteEmployee = function(employee) {
+                	//alert(employee.id);
+                    $http({
+                        method : 'DELETE',
+                        url : 'http://localhost:8000/api/employee/' + employee.id
+                    }).then(_success, _error);
+                };
+ 
+             // In case of edit, populate form fields and assign form.id with employee id
+                $scope.editEmployee = function(employee) {
+                    $scope.employeeForm.firstName = employee.firstName ;
+                    $scope.employeeForm.lastName = employee.lastName ;
+                    $scope.employeeForm.emailId = employee.emailId ;
+                    $scope.employeeForm.id = employee.id;
+                };
+         
+                /* Private Methods */
+                //HTTP GET- get all employee collection
+                function _refreshEmployeeData() {
+                    $http({
+                        method : 'GET',
+                        url : 'http://localhost:8000/api/employee'
+                    }).then(function successCallback(response) {
+                        $scope.employees = response.data;
+                    }, function errorCallback(response) {
+                        console.log(response.statusText);
+                    });
+                }
+         
+                function _success(response) {
+                    _refreshEmployeeData();
+                    _clearFormData()
+                }
+         
+                function _error(response) {
+                    console.log(response.statusText);
+                }
+         
+                //Clear the form
+                function _clearFormData() {
+                    $scope.employeeForm.id = -1;
+                    $scope.employeeForm.firstName = "";
+                    $scope.employeeForm.lastName = "";
+                    $scope.employeeForm.emailId = "";
+                
+                };
+            });
+        </script>
+<style>
+.blue-button {
+	background: #25A6E1;
+	filter: progid: DXImageTransform.Microsoft.gradient( startColorstr='#25A6E1',
+		endColorstr='#188BC0', GradientType=0);
+	padding: 3px 5px;
+	color: #fff;
+	font-family: 'Helvetica Neue', sans-serif;
+	font-size: 12px;
+	border-radius: 2px;
+	-moz-border-radius: 2px;
+	-webkit-border-radius: 4px;
+	border: 1px solid #1A87B9
+}
+ 
+.red-button {
+	background: #CD5C5C;
+	padding: 3px 5px;
+	color: #fff;
+	font-family: 'Helvetica Neue', sans-serif;
+	font-size: 12px;
+	border-radius: 2px;
+	-moz-border-radius: 2px;
+	-webkit-border-radius: 4px;
+	border: 1px solid #CD5C5C
+}
+ 
+table {
+	font-family: "Helvetica Neue", Helvetica, sans-serif;
+	width: 50%;
+}
+ 
+caption {
+	text-align: left;
+	color: silver;
+	font-weight: bold;
+	text-transform: uppercase;
+	padding: 5px;
+}
+ 
+th {
+	background: SteelBlue;
+	color: white;
+}
+ 
+tbody tr:nth-child(even) {
+	background: WhiteSmoke;
+}
+ 
+tbody tr td:nth-child(2) {
+	text-align: center;
+}
+ 
+tbody tr td:nth-child(3), tbody tr td:nth-child(4) {
+	text-align: center;
+	font-family: monospace;
+}
+ 
+tfoot {
+	background: SeaGreen;
+	color: white;
+	text-align: right;
+}
+ 
+tfoot tr th:last-child {
+	font-family: monospace;
+}
+ 
+td, th {
+	border: 1px solid gray;
+	width: 25%;
+	text-align: left;
+	padding: 5px 10px;
+}
+</style>
+<head>
+<body ng-app="EmployeeManagement" ng-controller="EmployeeController">
+	<h1>Employee Information</h1>
+	<form ng-submit="submitEmployee()">
+		<table>
+ 
+			<tr>
+				<th colspan="2">Add/Edit Employee</th>
+			</tr>
+			<tr>
+				<td>First Name</td>
+				<td><input type="text" ng-model="employeeForm.firstName" /></td>
+			</tr>
+			<tr>
+				<td>Last Name</td>
+				<td><input type="text" ng-model="employeeForm.lastName" /></td>
+			</tr>
+			<tr>
+				<td>Email</td>
+				<td><input type="text" ng-model="employeeForm.emailId" /></td>
+			</tr>
+			<tr>
+				<td colspan="2"> <input type="submit" value="Submit" 
+					class="blue-button" /></td>
+			</tr>
+		</table>
+	</form>
+	<table>
+		<tr>
+ 
+			<th>First Name</th>
+			<th>Last Name</th>
+			<th>Email</th>
+			<th>Operations</th>
+ 
+		</tr>
+ 
+		<tr ng-repeat="employee in employees">
+ 
+			<td>{{ employee.firstName }}</td>
+			<td>{{ employee.lastName }}</td>
+			<td>{{ employee.emailId }}</td>
+ 
+			<td><a ng-click="editEmployee(employee)" class="blue-button">Edit</a>
+				| <a ng-click="deleteEmployee(employee)" class="red-button">Delete</a></td>
+		</tr>
+ 
+	</table>
+</body>
+</html>

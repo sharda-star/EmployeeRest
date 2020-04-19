@@ -1,9 +1,10 @@
 package com.sharda.guide.controller;
 
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,7 +35,7 @@ public class EmployeeController {
         return employeeService.getEmployee(id);
     }
 	
-	@GetMapping
+	/*@GetMapping
 	@ResponseStatus(HttpStatus.OK)
     public Page<Employee>  getEmployeeList(@RequestParam(name = "firstName", required=false) String firstName, 
     								 @RequestParam(name = "lastName", required=false ) String lastName,
@@ -42,6 +43,14 @@ public class EmployeeController {
     								 @RequestParam(name = "pageNo", required=false) Integer pageNo,
     								 @RequestParam(name = "pageSize", required=false) Integer pageSize) throws Exception {
         return employeeService.getEmployeeList(firstName,lastName,emailId,pageNo,pageSize);
+    }*/
+	
+	@GetMapping
+	@ResponseStatus(HttpStatus.OK)
+    public List<Employee>  getEmployeeList(@RequestParam(name = "firstName", required=false) String firstName, 
+    								 @RequestParam(name = "lastName", required=false ) String lastName,
+    								 @RequestParam(name = "emailId", required=false ) String emailId) throws Exception {
+        return employeeService.getEmployeeList(firstName, lastName, emailId);
     }
 	
 	@PostMapping

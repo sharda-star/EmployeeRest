@@ -1,5 +1,7 @@
 package com.sharda.guide.service.impl;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import org.slf4j.Logger;
@@ -54,6 +56,13 @@ public class EmployeeServiceImpl implements EmployeeService{
 		return empList;
 	}
 
+	@Override
+	public List<Employee> getEmployeeList(String firstName, String lastName, String emailId){
+		List<Employee> empList = new ArrayList<>();
+		empList = employeeRepository.findAll();
+		return empList;
+	}
+	
 	@Override
 	public Employee updateEmployee(Long id, Employee newEmployee) throws Exception {
 		Employee employee = getEmployee(id);

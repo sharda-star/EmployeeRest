@@ -8,4 +8,10 @@ public interface EmployeeService {
 
 	Employee createEmployee(Employee employee)throws Exception;
 
+	Employee getEmployeeList(String firstName, String lastName);
+
+	Employee updateEmployee(Employee employee);
+
+	void deleteEmployee(Long id);
+
 }

@@ -36,4 +36,21 @@ public class EmployeeServiceImpl implements EmployeeService{
 		return employeeRepository.save(employee);
 	}
 
+	@Override
+	public Employee getEmployeeList(String firstName, String lastName) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Employee updateEmployee(Employee employee) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void deleteEmployee(Long id) {
+		employeeRepository.deleteById(id);
+	}
+
 }

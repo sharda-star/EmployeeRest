@@ -3,6 +3,7 @@ package com.sharda.guide.controller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -35,27 +36,30 @@ public class EmployeeController {
 	
 	@GetMapping
 	@ResponseStatus(HttpStatus.OK)
-    public Employee  getEmployeeList(@RequestParam(name = "firstName") String firstName, 
-    								 @RequestParam(name = "lastName") String lastName) throws Exception {
-        return employeeService.getEmployeeList(firstName,lastName);
+    public Page<Employee>  getEmployeeList(@RequestParam(name = "firstName", required=false) String firstName, 
+    								 @RequestParam(name = "lastName", required=false ) String lastName,
+    								 @RequestParam(name = "emailId", required=false ) String emailId,
+    								 @RequestParam(name = "pageNo", required=false) Integer pageNo,
+    								 @RequestParam(name = "pageSize", required=false) Integer pageSize) throws Exception {
+        return employeeService.getEmployeeList(firstName,lastName,emailId,pageNo,pageSize);
     }
 	
-	@PostMapping(consumes = "application/json", produces = "application/json")
+	@PostMapping
 	@ResponseStatus(HttpStatus.OK)
     public Employee createEmployee(@RequestBody Employee employee) throws Exception {
-		log.info("FirstName : "+employee.getFirstName());
-		log.info("LastName : "+employee.getLastName());
-		log.info("EmailId : "+employee.getEmailId());
         return employeeService.createEmployee(employee);
     }
 	
-	@PutMapping
+	@PutMapping("/{id}")
 	@ResponseStatus(HttpStatus.OK)
-    public Employee  updateEmployee(@RequestBody Employee employee) throws Exception {
-        return employeeService.updateEmployee(employee);
+    public Employee  updateEmployee(@PathVariable(value = "id") Long id,@RequestBody Employee employee) throws Exception {
+		log.info("FirstName : "+employee.getFirstName());
+		log.info("LastName : "+employee.getLastName());
+		log.info("EmailId : "+employee.getEmailId());
+        return employeeService.updateEmployee(id,employee);
     }
 	
-	@DeleteMapping
+	@DeleteMapping("/{id}")
 	@ResponseStatus(HttpStatus.OK)
     public void deleteEmployee(@PathVariable(value = "id") Long id) throws Exception {
          employeeService.deleteEmployee(id);

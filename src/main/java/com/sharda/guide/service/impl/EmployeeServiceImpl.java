@@ -5,6 +5,9 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.sharda.guide.exception.EntityNotFoundException;
@@ -37,17 +40,34 @@ public class EmployeeServiceImpl implements EmployeeService{
 	}
 
 	@Override
-	public Employee getEmployeeList(String firstName, String lastName) {
-		// TODO Auto-generated method stub
-		return null;
+	public Page<Employee> getEmployeeList(String firstName, String lastName, String emailId,Integer pageNo, Integer pageSize){
+		if(pageNo==null) {
+			pageNo = 0;
+		}
+		if(pageSize==null){
+			pageSize = 10;
+		}
+		Pageable pageable = PageRequest.of(pageNo, pageSize); 
+		
+		Page<Employee> empList = null;
+		empList = employeeRepository.findAll(pageable);
+		return empList;
 	}
 
 	@Override
-	public Employee updateEmployee(Employee employee) {
-		// TODO Auto-generated method stub
-		return null;
+	public Employee updateEmployee(Long id, Employee newEmployee) throws Exception {
+		Employee employee = getEmployee(id);
+		if(!newEmployee.getFirstName().isEmpty()) {
+			employee.setFirstName(newEmployee.getFirstName());
+		}
+		if(!newEmployee.getLastName().isEmpty()) {
+			employee.setLastName(newEmployee.getLastName());
+		}
+		if(!newEmployee.getEmailId().isEmpty()) {
+			employee.setEmailId(newEmployee.getEmailId());
+		}
+		return employeeRepository.save(employee);
 	}
-
 	@Override
 	public void deleteEmployee(Long id) {
 		employeeRepository.deleteById(id);

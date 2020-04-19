@@ -57,13 +57,13 @@ public class EmployeeServiceImpl implements EmployeeService{
 	@Override
 	public Employee updateEmployee(Long id, Employee newEmployee) throws Exception {
 		Employee employee = getEmployee(id);
-		if(!newEmployee.getFirstName().isEmpty()) {
+		if(newEmployee.getFirstName()!=null) {
 			employee.setFirstName(newEmployee.getFirstName());
 		}
-		if(!newEmployee.getLastName().isEmpty()) {
+		if(newEmployee.getLastName()!=null) {
 			employee.setLastName(newEmployee.getLastName());
 		}
-		if(!newEmployee.getEmailId().isEmpty()) {
+		if(newEmployee.getEmailId()!=null) {
 			employee.setEmailId(newEmployee.getEmailId());
 		}
 		return employeeRepository.save(employee);
